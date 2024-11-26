@@ -7,13 +7,11 @@ const HomePage = () => {
   const [todos, setTodos] = useState([]);
   const userId = localStorage.getItem("currentUserId");
 
-  // Отримати всі збережені todos
   const retrieveTodos = useCallback(() => {
     const savedTodos = JSON.parse(localStorage.getItem("todos")) || [];
     return savedTodos;
   }, []);
 
-  // Отримати todos для поточного користувача
   const retrieveUserTodos = useCallback(() => {
     const savedTodos = retrieveTodos();
     const currentUserTodos = savedTodos.find(
