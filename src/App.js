@@ -1,33 +1,45 @@
-import React, { useState } from "react";
-import TodoList from "./TodoList";
-import TodoForm from "./TodoForm";
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import { Routes, Route, Link, Navigate, useNavigate } from "react-router";
+import LoginPage from "./pages/LoginPage/LoginPage.js";
+import HomePage from "./pages/HomePage/HomePage.js";
 
 function App() {
-  const [todos, setTodos] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
 
-  const addTodo = (text) => {
-    const newTodo = { text, id: Date.now(), completed: false };
-    setTodos([...todos, newTodo]);
-  };
-
-  const toggleTodo = (id) => {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
-  };
-
-  const deleteTodo = (id) => {
-    setTodos(todos.filter((todo) => todo.id !== id));
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    navigate("/login");
   };
 
   return (
-    <div className="App">
-      <h1>To-Do List</h1>
-      <TodoForm addTodo={addTodo} />
-      <TodoList todos={todos} toggleTodo={toggleTodo} deleteTodo={deleteTodo} />
+    <div>
+      <header>
+        <div className="headertext">
+          <Link to="/home">Home</Link>
+          <Link to="/login">Login</Link>
+          {isAuthenticated && (
+            <button onClick={handleLogout} className="logout-button">
+              Logout
+            </button>
+          )}
+        </div>
+      </header>
+      <Routes>
+        <Route
+          path="/login"
+          element={<LoginPage setIsAuthenticated={setIsAuthenticated} />}
+        />
+        <Route
+          path="/home"
+          element={
+            isAuthenticated ? <HomePage /> : <Navigate to="/login" replace />
+          }
+        />
+        
+        <Route path="/" element={<Navigate to="/login" replace />} />
+      </Routes>
     </div>
   );
 }

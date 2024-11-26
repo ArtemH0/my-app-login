@@ -4,38 +4,36 @@
   margin: 0 auto;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
+
+header {
+  background-color: #706e6e;
+  padding: 15px 20px;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-li {
+.headertext {
   display: flex;
-  justify-content: space-between;
-  padding: 8px;
-  border-bottom: 1px solid #ddd;
+  justify-content: flex-end;
+  gap: 20px;
 }
 
-button {
-  background-color: #00f836;
+.headertext a {
+  text-decoration: none;
+  color: whitesmoke;
+  font-size: 1rem;
+  font-family: 'Arial', sans-serif;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.headertext a:hover {
+  background-color: #007bff;
   color: white;
-  border: none;
-  cursor: pointer;
-  padding: 3px;
-  border-bottom: 1px solid #ddd;
 }
 
-.Delete {
-  background-color: red;
+.headertext a:active {
+  background-color: #0056b3;
   color: white;
-  border: none;
-  cursor: pointer;
-}
-
-h1 {
-  color: #000000;
-  font-size: 2.5em;
-  margin-bottom: 20px;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-  text-align: center;
 }
