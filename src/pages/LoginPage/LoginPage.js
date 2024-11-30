@@ -47,7 +47,7 @@ const LoginPage = ({ setIsAuthenticated }) => {
 
     if (user) {
       setIsAuthenticated(true);
-      saveUser(user.id)
+        saveUser(user.id)
       navigate("/home");
     } else {
       setError("Invalid name or code!");

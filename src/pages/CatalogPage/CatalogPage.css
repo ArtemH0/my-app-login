@@ -1,0 +1,17 @@
+.catalog-page {
+    text-align: center;
+}
+
+.catalog-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.catalog-gallery img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}

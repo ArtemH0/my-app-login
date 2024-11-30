@@ -3,6 +3,7 @@ import "./App.css";
 import { Routes, Route, Link, Navigate, useNavigate } from "react-router";
 import LoginPage from "./pages/LoginPage/LoginPage.js";
 import HomePage from "./pages/HomePage/HomePage.js";
+import CatalogPage from "./pages/CatalogPage/CatalogPage.js";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -19,6 +20,7 @@ function App() {
         <div className="headertext">
           <Link to="/home">Home</Link>
           <Link to="/login">Login</Link>
+          <Link to="/catalog">Catalog</Link>
           {isAuthenticated && (
             <button onClick={handleLogout} className="logout-button">
               Logout
@@ -37,7 +39,13 @@ function App() {
             isAuthenticated ? <HomePage /> : <Navigate to="/login" replace />
           }
         />
-        
+        <Route
+          path="/catalog"
+          element={
+            isAuthenticated ? <CatalogPage /> : <Navigate to="/login" replace />
+          }
+        />
+
         <Route path="/" element={<Navigate to="/login" replace />} />
       </Routes>
     </div>
