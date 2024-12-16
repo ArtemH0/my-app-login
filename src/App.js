@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { Routes, Route, Link, Navigate, useNavigate } from "react-router";
 import LoginPage from "./pages/LoginPage/LoginPage.js";
@@ -7,12 +7,24 @@ import CatalogPage from "./pages/CatalogPage/CatalogPage.js";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isRendered, setIsRendered] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("currentUserId")) {
+      setIsAuthenticated(true);
+    }
+    setIsRendered(true);
+  }, []);
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     navigate("/login");
   };
+
+  if (!isRendered) {
+    return null;
+  }
 
   return (
     <div>

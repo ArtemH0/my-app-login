@@ -1,34 +1,65 @@
-import React, { useState } from "react";
-import CatImg from "../../components/CatImg"; 
-import RefreshButton from "../../components/RefreshButton/RefreshButton"; 
-import "./CatalogPage.css"; 
+import React, { useEffect, useState } from "react";
+import "./CatalogPage.css";
+import CatImg from "../../components/CatImg";
 
 const CatalogPage = () => {
-  const imageSize = 200; 
-  const [images, setImages] = useState(
-    Array.from({ length: 6 }, (_, index) => index)
-  );
+  const [catImages, setCatImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const refreshImages = () => {
+  const fetchCatImages = async () => {
+    const headers = new Headers({
+      "Content-Type": "application/json",
+      "x-api-key":
+        "live_4BUbGsIg9hz3AT71uD0qRER5FTcHlrQcItp8QJBYGndtZ7T0EIkq74IlbGwHenUn",
+    });
 
-    setImages(Array.from({ length: 6 }, () => Math.random()));
+    const requestOptions = {
+      method: "GET",
+      headers: headers,
+      redirect: "follow",
+    };
+
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        "https://api.thecatapi.com/v1/images/search?size=med&mime_types=jpg&format=json&has_breeds=true&order=RANDOM&page=0&limit=5",
+        requestOptions
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch cat images");
+      }
+      const result = await response.json();
+      setCatImages(result);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  useEffect(() => {
+    fetchCatImages();
+  }, []);
 
   return (
     <div className="catalog-page">
-      <h1>Каталог Картинок</h1>
-      <div className="catalog-gallery">
-        {images.map((key, index) => (
-          <CatImg
-          key={key} 
-          width={imageSize}
-          height={imageSize}
-          />
+      <h1>Cat Gallery</h1>
+      {isLoading && <p>Loading...</p>}
+      {error && <p>Error: {error}</p>}
+      <div className="cat-images-grid">
+        {catImages.map((cat, index) => (
+          <CatImg key={index} imageUrl={cat.url} />
         ))}
       </div>
-        <RefreshButton onClick={refreshImages} />
+      <button onClick={fetchCatImages} className="refresh-button">
+        Refresh Cats
+      </button>
     </div>
   );
 };
 
 export default CatalogPage;
+
+
+
