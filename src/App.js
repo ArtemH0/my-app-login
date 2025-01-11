@@ -1,30 +1,34 @@
 import { useEffect, useState } from "react";
+import { Routes, Route, Link, Navigate, useNavigate } from "react-router-dom";
 import "./App.css";
-import { Routes, Route, Link, Navigate, useNavigate } from "react-router";
 import LoginPage from "./pages/LoginPage/LoginPage.js";
 import HomePage from "./pages/HomePage/HomePage.js";
 import CatalogPage from "./pages/CatalogPage/CatalogPage.js";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isRendered, setIsRendered] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(
+    localStorage.getItem("isAuthenticated") === "true"
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem("currentUserId")) {
-      setIsAuthenticated(true);
-    }
-    setIsRendered(true);
+    const authStatus = localStorage.getItem("isAuthenticated") === "true";
+    setIsAuthenticated(authStatus);
   }, []);
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    localStorage.setItem("isAuthenticated", "false");
+    localStorage.removeItem("currentUserId");
     navigate("/login");
   };
 
-  if (!isRendered) {
-    return null;
-  }
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+    localStorage.setItem("isAuthenticated", "true");
+    navigate("/home");
+  };
 
   return (
     <div>
@@ -42,23 +46,33 @@ function App() {
       </header>
       <Routes>
         <Route
-          path="/login"
-          element={<LoginPage setIsAuthenticated={setIsAuthenticated} />}
-        />
-        <Route
           path="/home"
           element={
-            isAuthenticated ? <HomePage /> : <Navigate to="/login" replace />
+            <PrivateRoute isAuthenticated={isAuthenticated}>
+              <HomePage />
+            </PrivateRoute>
           }
         />
         <Route
           path="/catalog"
           element={
-            isAuthenticated ? <CatalogPage /> : <Navigate to="/login" replace />
+            <PrivateRoute isAuthenticated={isAuthenticated}>
+              <CatalogPage />
+            </PrivateRoute>
           }
         />
-
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route
+          path="/login"
+          element={<LoginPage setIsAuthenticated={handleLogin} />}
+        />
+        <Route
+          path="/"
+          element={
+            isAuthenticated
+              ? <Navigate to="/home" replace />
+              : <Navigate to="/login" replace />
+          }
+        />
       </Routes>
     </div>
   );

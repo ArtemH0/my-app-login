@@ -1,45 +1,28 @@
 import React, { useEffect, useState } from "react";
 import "./CatalogPage.css";
 import CatImg from "../../components/CatImg";
+import { fetchCatImages } from "../../api";
 
 const CatalogPage = () => {
   const [catImages, setCatImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchCatImages = async () => {
-    const headers = new Headers({
-      "Content-Type": "application/json",
-      "x-api-key":
-        "live_4BUbGsIg9hz3AT71uD0qRER5FTcHlrQcItp8QJBYGndtZ7T0EIkq74IlbGwHenUn",
-    });
+  const fetchImages = async () => {
+    setIsLoading(true);
+    const res = await fetchCatImages();
+    setIsLoading(false);
 
-    const requestOptions = {
-      method: "GET",
-      headers: headers,
-      redirect: "follow",
-    };
-
-    try {
-      setIsLoading(true);
-      const response = await fetch(
-        "https://api.thecatapi.com/v1/images/search?size=med&mime_types=jpg&format=json&has_breeds=true&order=RANDOM&page=0&limit=5",
-        requestOptions
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch cat images");
-      }
-      const result = await response.json();
-      setCatImages(result);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
+    if (res.error) {
+      setError(res.error);
+      return;
     }
+
+    setCatImages(res);
   };
 
   useEffect(() => {
-    fetchCatImages();
+    fetchImages();
   }, []);
 
   return (
@@ -52,7 +35,7 @@ const CatalogPage = () => {
           <CatImg key={index} imageUrl={cat.url} />
         ))}
       </div>
-      <button onClick={fetchCatImages} className="refresh-button">
+      <button onClick={fetchImages} className="refresh-button">
         Refresh Cats
       </button>
     </div>
